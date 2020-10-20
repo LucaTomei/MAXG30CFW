@@ -225,7 +225,19 @@ class Cfw_Builder(object):
 		file.write(content)
 		file.close()
 
+	def shareForIphone(self):
+		try:
+			import console
+			console.open_in(self.file_name)
+		except:
+			# Nor running on iPhone device with Pythonista installed and Unable to share zip file
+			pass
+
 if __name__ == '__main__':
 	Cfw_BuilderOBJ = Cfw_Builder()
 	Cfw_BuilderOBJ.check_changelogs()	# Check if there was an update
 	Cfw_BuilderOBJ.main()
+	Cfw_BuilderOBJ.shareForIphone()
+
+
+
