@@ -1,10 +1,13 @@
 import requests
+from bs4 import BeautifulSoup
 
 class Cfw_Builder(object):
 	def __init__(self):
 		self.requestURL = "https://api.cfw.sh/max"
 
 		self.version = self.default_value_by_param("version")
+
+		self.latest_changelog_date = "21-06-2020"
 
 		self.cfw_params_names = {
 			"Version": "version",
@@ -54,6 +57,22 @@ class Cfw_Builder(object):
 		}
 		
 		self.file_name = "%s_" + self.version + ".zip"
+
+
+	def check_changelogs(self):
+		siteURL = "https://max.cfw.sh"
+		response = requests.get(siteURL)
+		content = response.content
+		parsed_html = BeautifulSoup(content, "html.parser")
+		main_li = parsed_html.select('ul > li')[2]
+		ul = main_li.select('li')[0].get_text(strip=True)
+		latest_changelog_date = ul.split(':')[0]
+		latest_changelog_changes = ul.split(':')[1]
+		if latest_changelog_date != self.latest_changelog_date:
+			print("Il %s è stato aggiornato con le seguenti modifiche: %s\n" % (siteURL, latest_changelog_changes)) 
+		
+		
+
 
 	def value_by_name(self, name):
 		for item in self.cfw_params_names:
@@ -208,4 +227,5 @@ class Cfw_Builder(object):
 
 if __name__ == '__main__':
 	Cfw_BuilderOBJ = Cfw_Builder()
+	Cfw_BuilderOBJ.check_changelogs()	# Check if there was an update
 	Cfw_BuilderOBJ.main()
