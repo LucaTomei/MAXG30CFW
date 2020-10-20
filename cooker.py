@@ -29,8 +29,7 @@ class Cfw_Builder(object):
 			"Direct power control curve":"direct_power_control_curve",
 			"Coefficient":"direct_power_control_curve_coefficient",
 			"Version spoofing":"version_spoofing",
-			"No overspeed alarm":"no_overspeed_alarm",
-			#"Current raising coefficient, mA/step":"current_raising_coefficient"
+			"No overspeed alarm":"no_overspeed_alarm"
 		}
 
 		self.cfw_params_description = {
@@ -52,19 +51,24 @@ class Cfw_Builder(object):
 			"Direct power control curve":"Influisce sull'accelerazione della corrente.\n\t- 'flat': Molto scattante in erogazione, da tutto subito\n\t- 'quadtaric': Molto più dolce alla partenza e accellerazione esponenziale\n\t[Default: flat]",
 			"Coefficient":" Costante di Curva\n\t- Consigliato 120\n\t[Default: 120]",
 			"Version spoofing":"Aumenta il numero di versione per impedire gli aggiornamenti DRV dall'app Ninebot.\n\t-'on' o 'off'\n\t[Default: off]",	
-			"No overspeed alarm": "Disabilita gli odiosi segnali acustici oltre i 35 km/h.\n\t-'on' o 'off'\n\t[Default:off]",
-			#"Current raising coefficient, mA/step":"Quanto velocemente verrà applicata la corrente. Influisce sulla velocità di aumento\n\t- da 100 a 2000\n\t[Default: 500]"
+			"No overspeed alarm": "Disabilita gli odiosi segnali acustici oltre i 35 km/h.\n\t-'on' o 'off'\n\t[Default:off]"
 		}
 		
 		self.file_name = "%s_" + self.version + ".zip"
 
+		self.check_changelogs()
+
 
 	def check_changelogs(self):
 		siteURL = "https://max.cfw.sh"
-		response = requests.get(siteURL)
+		headers={'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B137 Safari/601.1'}
+		response = requests.get(url = siteURL, headers = headers)
 		content = response.content
 		parsed_html = BeautifulSoup(content, "html.parser")
-		main_li = parsed_html.select('ul > li')[2]
+		if self.onPythonista():
+			main_li = parsed_html.select('ul > li')[1]
+		else:
+			main_li = parsed_html.select('ul > li')[2]
 		ul = main_li.select('li')[0].get_text(strip=True)
 		latest_changelog_date = ul.split(':')[0]
 		latest_changelog_changes = ul.split(':')[1]
@@ -104,8 +108,7 @@ class Cfw_Builder(object):
 			"cruise_control_delay":5,
 			"error_raising_level":1,
 			"no_kers":"",
-			"no_overspeed_alarm":"",
-			#"current_raising_coefficient": 500
+			"no_overspeed_alarm":""
 		}
 		return cfw_params[param]
 
@@ -226,16 +229,21 @@ class Cfw_Builder(object):
 		file.close()
 
 	def shareForIphone(self):
-		try:
+		if self.onPythonista():
 			import console
 			console.open_in(self.file_name)
-		except:
-			# Nor running on iPhone device with Pythonista installed and Unable to share zip file
+		else:
 			pass
+
+	def onPythonista(self):
+		try: 
+			import objc_util
+			return True
+		except:	return False
+
 
 if __name__ == '__main__':
 	Cfw_BuilderOBJ = Cfw_Builder()
-	Cfw_BuilderOBJ.check_changelogs()	# Check if there was an update
 	Cfw_BuilderOBJ.main()
 	Cfw_BuilderOBJ.shareForIphone()
 
