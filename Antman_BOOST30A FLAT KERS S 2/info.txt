@@ -1,5 +1,0 @@
-dev: max;
-nam: DRV126;
-enc: Y;
-typ: DRV;
-md5e: f2dd9f3e536af2b05e7b6885729c5ec4;

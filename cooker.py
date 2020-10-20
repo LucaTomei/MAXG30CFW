@@ -27,7 +27,7 @@ class Cfw_Builder(object):
 			"Coefficient":"direct_power_control_curve_coefficient",
 			"Version spoofing":"version_spoofing",
 			"No overspeed alarm":"no_overspeed_alarm",
-			"Current raising coefficient, mA/step":"current_raising_coefficient"
+			#"Current raising coefficient, mA/step":"current_raising_coefficient"
 		}
 
 		self.cfw_params_description = {
@@ -50,7 +50,7 @@ class Cfw_Builder(object):
 			"Coefficient":" Costante di Curva\n\t- Consigliato 120\n\t[Default: 120]",
 			"Version spoofing":"Aumenta il numero di versione per impedire gli aggiornamenti DRV dall'app Ninebot.\n\t-'on' o 'off'\n\t[Default: off]",	
 			"No overspeed alarm": "Disabilita gli odiosi segnali acustici oltre i 35 km/h.\n\t-'on' o 'off'\n\t[Default:off]",
-			"Current raising coefficient, mA/step":"Quanto velocemente verrà applicata la corrente. Influisce sulla velocità di aumento\n\t- da 100 a 2000\n\t[Default: 500]"
+			#"Current raising coefficient, mA/step":"Quanto velocemente verrà applicata la corrente. Influisce sulla velocità di aumento\n\t- da 100 a 2000\n\t[Default: 500]"
 		}
 		
 		self.file_name = "%s_" + self.version + ".zip"
@@ -86,7 +86,7 @@ class Cfw_Builder(object):
 			"error_raising_level":1,
 			"no_kers":"",
 			"no_overspeed_alarm":"",
-			"current_raising_coefficient": 500
+			#"current_raising_coefficient": 500
 		}
 		return cfw_params[param]
 
