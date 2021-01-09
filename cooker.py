@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 class Cfw_Builder(object):
 	def __init__(self):
@@ -56,7 +57,7 @@ class Cfw_Builder(object):
 		
 		self.file_name = "%s_" + self.version + ".zip"
 
-		self.check_changelogs()
+		#self.check_changelogs()
 
 
 	def check_changelogs(self):
@@ -213,6 +214,7 @@ class Cfw_Builder(object):
 				chosen_params[param_name] = self.default_value_by_param(param_name)
 		
 		chosen_params = self.clean_dict(chosen_params)
+		print(chosen_params)
 
 		response = requests.get(url = self.requestURL, params = chosen_params)
 		self.write_zip(response.content)
@@ -220,7 +222,13 @@ class Cfw_Builder(object):
 
 	def main(self):
 		print("Come desideri chiamare questo file?")
-		self.file_name = (self.file_name % input()).upper()
+		file_name = input()
+		now = datetime.now()
+		dt_string = now.strftime("%d_%m_%Y")
+		if file_name == '' or file_name == '\n':
+			self.file_name = (self.file_name % dt_string).upper() + ".zip"
+		else:
+			self.file_name = (self.file_name % file_name+ '_(' + dt_string + ')').upper() + ".zip"
 		self.cook_firmware()
 
 	def write_zip(self, content):
